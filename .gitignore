@@ -1,0 +1,51 @@
+# Misc development files
+**/.env
+**/.secrets
+.coverage
+**/*.sqlite3
+**/*.rdb
+**/.pytest_cache/
+*.DS_Store
+**/*.bak
+**/.ruff_cache
+# IDE
+**/.idea
+**/.vscode
+
+# virtual environment
+venv/
+.venv/
+env/
+
+# Celery
+**/celerybeat-schedule
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# client
+**/node_modules
+**/.yarn
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
