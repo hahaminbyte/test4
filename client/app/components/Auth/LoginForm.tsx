@@ -51,3 +51,5 @@ export function LoginForm(): ReactElement {
     </Form>
   );
 }
+
+// history-step 4: Integrated login functionality with API
