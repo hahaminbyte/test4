@@ -278,3 +278,5 @@ export function ManifestForm({
     </Container>
   );
 }
+
+// history-step 9: Refactored manifest management forms for better usability
