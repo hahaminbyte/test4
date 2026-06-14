@@ -280,3 +280,5 @@ export function ManifestForm({
 }
 
 // history-step 9: Refactored manifest management forms for better usability
+
+// history-step 18: Improved error handling in manifest forms
