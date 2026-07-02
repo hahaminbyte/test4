@@ -79,3 +79,5 @@ to imply endorsement of any commercial product or activity by EPA or
 the United States Government.
 
 <!-- history-step 19: Updated README with manifest management instructions -->
+
+<!-- history-step 27: Updated README with testing instructions -->
