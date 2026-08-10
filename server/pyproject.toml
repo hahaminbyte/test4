@@ -1,0 +1,190 @@
+[project]
+name = "haztrak"
+version = "0.8.0"
+description = "An open-source web app illustrating how waste management software can interface with RCRAInfo to track hazardous waste"
+readme = "README.md"
+authors = [
+    { name = "David Graham", email = "graham.david@epa.gov" },
+]
+maintainers = [
+    { name = "David Graham", email = "graham.david@epa.gov" },
+]
+classifiers = [
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+]
+
+license = { text = "MIT" }
+requires-python = ">=3.12.0"
+
+dependencies = [
+    "django==5.2.6",
+    "django-celery-results==2.6.0",
+    "django-cors-headers==4.7.0",
+    "django-extensions==4.1",
+    "django-celery-beat==2.8.0",
+    "djangorestframework==3.16.0",
+    "gunicorn==23.0.0",
+    "emanifest==4.0.3",
+    "psycopg[binary]==3.2.9",
+    "whitenoise==6.9.0",
+    "celery>=5.5.1,<5.6.0",
+    "redis==5.1.0",
+    "drf-spectacular==0.28.0",
+    "django-health-check==3.18.3",
+    "django-guardian==3.0.3",
+    "django-allauth[socialaccount]>=65.0.0,<66.0.0",
+    "uvicorn[standard]>=0.35.0",
+    "pillow==11.3.0",
+    "uvicorn-worker>=0.3.0",
+    "eth-account>=0.13.0",
+]
+
+[dependency-groups]
+type = [
+    "celery-types==0.23.0",
+    "django-stubs-ext>=5.1.3,<5.2.0",
+    "django-stubs[compatible-mypy]>=5.1.3,<5.2.0",
+    "djangorestframework-stubs==3.15.0",
+    "mypy==1.15.0",
+    "mypy-extensions>=1.0.0",
+    "types-pillow>=10.2.0.20240822",
+    "types-redis>=4.6.0",
+]
+test = [
+    "coverage==7.10.6",
+    "faker==26.1.0",
+    "pytest==8.3.4",
+    "pytest-cov>=6.0.0",
+    "pytest-django==4.8.0",
+    "pytest-mock>=3.14.0",
+    "pytest-env>=1.1.5",
+    "pytest-randomly>=3.16.0",
+    "pytest-xdist>=3.6.1",
+    "responses==0.25.3",
+]
+dev = [
+    "pre-commit==4.2.0",
+    "ruff==0.11.7",
+    { include-group = "type" },
+    { include-group = "test" },
+]
+
+[project.urls]
+issues = "https://github.com/USEPA/haztrak/issues"
+documentation = "https://usepa.github.io/haztrak/"
+homepage = "https://github.com/USEPA/haztrak"
+repository = "https://github.com/USEPA/haztrak"
+
+[tool.ruff]
+line-length = 99
+exclude = [
+    "**/migrations/*.py",
+    ".venv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle
+    "I", # isort
+    "N", # pep8-naming
+    "UP", # pyupgrade
+    "RUF", # ruff
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "ISC", # flake8-implicit-str-concat
+    "PIE", # flake8-pie
+    "PT", # flake-pytest-style
+    "PTH", # flake8-use-pathlib
+    "PD", # pandas-vet
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+]
+extend-ignore = [
+    "RUF012",
+]
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/**.py" = ["D100", "D101", "D102", "D103", "E501", "RUF012"]
+"**/tests/**/*.py" = ["S101", "E501", "PLR0917", "ISC001", "D100", "D101", "D102", "PLR0913", "PLR2004"]
+"**/*serializer*.py" = ["N815"]
+"**/views.py" = ["N815"]
+"**/__init__.py" = ["D104"]
+"**/models.py" = ["COM819"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["haztrak"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["ninja.Query", "ninja.Depends", "ninja.File"]
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "haztrak.settings.test"
+addopts = [
+    "--strict-config",
+    "--strict-markers",
+    "--reuse-db",
+    "--no-migrations",
+    "--maxprocesses=4"
+]
+
+[tool.mypy]
+plugins = [
+    "mypy_django_plugin.main",
+    "mypy_drf_plugin.main"
+]
+exclude = [
+    "**/migrations/*.py"
+]
+enable_error_code = [
+    "truthy-bool",
+    "truthy-iterable",
+    "redundant-expr",
+    "unused-awaitable",
+    "ignore-without-code",
+    "possibly-undefined",
+    "redundant-self",
+]
+allow_redefinition = false
+check_untyped_defs = true
+disallow_untyped_decorators = true
+disallow_any_explicit = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+explicit_package_bases = true
+ignore_errors = false
+ignore_missing_imports = true
+implicit_reexport = false
+local_partial_types = true
+strict_equality = true
+strict_optional = true
+show_error_codes = true
+no_implicit_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unreachable = true
+warn_no_return = true
+
+[tool.django-stubs]
+django_settings_module = ".haztrak.settings.test"
+strict_settings = false

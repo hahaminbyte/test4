@@ -1,0 +1,183 @@
+@import url('~bootstrap/dist/css/bootstrap.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 211, 30%, 29%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 217, 98.3%, 52.2%;
+        --secondary-foreground: 0 100% 98%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+        --radius: 0.5rem;
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        /*  Toastify  */
+        --bs-card-cap-padding-y: 0;
+        --haztrak-info: #33cccc;
+        --toastify-color-info: var(--haztrak-info);
+        --toastify-color-success: var(--bs-success);
+        --toastify-color-warning: var(--bs-warning);
+        --toastify-color-error: var(--bs-danger);
+        --toastify-color-transparent: rgba(255, 255, 255, 0.7);
+        --toastify-icon-color-info: var(--bs-info);
+        --toastify-icon-color-success: var(--bs-success);
+        --toastify-icon-color-warning: var(--bs-warning);
+        --toastify-icon-color-error: var(--bs-danger);
+        --toastify-color-progress-light: linear-gradient(
+                to right,
+                #4cd964,
+                #5ac8fa,
+                #007aff,
+                #34aadc,
+                #5856d6,
+                #ff2d55
+        );
+        --toastify-color-progress-dark: #bb86fc;
+        --toastify-color-progress-info: var(--bs-info);
+        --toastify-color-progress-success: var(--bs-success);
+        --toastify-color-progress-warning: var(--bs-warning);
+        --toastify-color-progress-error: var(--bs-danger);
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 211, 30%, 29%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 217, 98.3%, 52.2%;
+        --secondary-foreground: 0 100% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+    }
+}
+
+@layer base {
+    * {
+        @apply tw-border-border;
+    }
+
+    body {
+        @apply tw-bg-background tw-text-foreground;
+    }
+}
+
+/* boilerplate*/
+@media (prefers-reduced-motion: no-preference) {
+    :root {
+        scroll-behavior: smooth;
+    }
+}
+
+/*// Haztrak custom styles*/
+.overlay-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Ensure it's above other content */
+}
+
+.no-caret::after {
+    display: none !important;
+}
+
+.modal-90w {
+    width: 90% !important;
+    max-width: none !important;
+}
+
+.rotate-90-cc {
+    transform: rotate(-90deg);
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: var(--bs-body-font-family), sans-serif;
+    font-size: var(--bs-body-font-size);
+    font-weight: var(--bs-body-font-weight);
+    line-height: var(--bs-body-line-height);
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+button.recharts-legend-item {
+    all: unset;
+    cursor: pointer;
+}
+
+.recharts-legend-item:focus .recharts-legend-item-text {
+    border-bottom: 2px solid;
+}
+
+/* Bootstrap overrides */
+/* Variables */
+:root {
+    --font-family-base: 'Open Sans', sans-serif;
+    --card-cap-padding-y: 0.1rem;
+    --card-cap-spacer-y: 0;
+    --card-cap-spacer-x: 0;
+    --info: #009999;
+}
+
+/* Override Bootstrap styles */
+.card-cap {
+    padding-top: var(--card-cap-padding-y);
+    padding-bottom: var(--card-cap-padding-y);
+    margin-top: var(--card-cap-spacer-y);
+    margin-bottom: var(--card-cap-spacer-y);
+    margin-left: var(--card-cap-spacer-x);
+    margin-right: var(--card-cap-spacer-x);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Jost', sans-serif;
+}

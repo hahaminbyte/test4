@@ -41,5 +41,3 @@ Some available scripts to get started
 - `npm start`
 - `npm test`
 - `npm run build`
-
-<!-- history-step 24: Improved user documentation for site management -->

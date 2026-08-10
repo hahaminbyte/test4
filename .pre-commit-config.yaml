@@ -1,0 +1,54 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+  autoupdate_branch: "pre-commit"
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: quarterly
+  skip: [ ]
+  submodules: false
+
+repos:
+  # Pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v4.5.0"
+    hooks:
+      - id: trailing-whitespace
+      - id: check-json
+      - id: check-yaml
+        exclude: infra/haztrak/
+      - id: end-of-file-fixer
+        # https://regex101.com/r/cDOFR1/1
+        exclude: (?x)^(\.idea\/.*|\.vscode\/.*)$
+  # Ruff
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.11.2
+    hooks:
+      - id: ruff
+        args: [ --fix, --config, ./server/pyproject.toml ]
+      - id: ruff-format
+        args: [ --config, ./server/pyproject.toml ]
+  # Check django migrations
+  - repo: local
+    hooks:
+      - id: pre-commit-django-migrations
+        name: Check django migrations
+        entry: env DJANGO_SETTINGS_MODULE=haztrak.settings.dev python server/manage.py makemigrations --check
+        language: system
+        types:
+          - python
+        pass_filenames: false
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v0.6.1
+    hooks:
+      - id: biome-check
+  # PyUpgrade
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v0.6.1
+    hooks:
+      - id: biome-check

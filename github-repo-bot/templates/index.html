@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repository Enhancement Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        .card {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 2rem 0;
+        }
+        
+        .progress-section {
+            display: none;
+            padding: 2rem 0;
+        }
+        
+        .team-member {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .commit-pattern {
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .realistic-features {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .status-card {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .success-card {
+            background: #d1edff;
+            border: 1px solid #0dcaf0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .error-card {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .error-card p {
+            white-space: pre-wrap;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="fab fa-github"></i>
+                GitHub Repository Enhancement Bot
+            </h1>
+            <p class="lead mb-4">
+                Point at a local project — build <strong>real commit history</strong> from your actual files
+                with past commit dates. Issues/PRs cannot be backdated on GitHub, so they stay optional.
+            </p>
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h5>Multi-Developer History</h5>
+                        <p>Realistic commit patterns from multiple team members</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-code-branch feature-icon"></i>
+                        <h5>Authentic Patterns</h5>
+                        <p>Human-like commit timing and realistic development flow</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-rocket feature-icon"></i>
+                        <h5>Professional Setup</h5>
+                        <p>Complete project structure with issues, documentation, and licensing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Form Section -->
+    <section class="form-section" id="form-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-cog"></i>
+                                Configure Your Repository
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="repository-form">
+                                <!-- API Credentials -->
+                                <div class="row mb-4">
+                                    <div class="col-12 d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="fas fa-key"></i> API Credentials</h5>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="testGitHubToken()">
+                                                <i class="fas fa-vial"></i> Test GitHub Token
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success" onclick="saveCredentials()">
+                                                <i class="fas fa-save"></i> Save to .env
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12"><hr></div>
+                                    <div class="col-12 mb-2">
+                                        <div id="credentials-status" class="small text-muted">Loading saved settings...</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="github_token" class="form-label">GitHub Token *</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="github_token"
+                                                   placeholder="ghp_xxxxxxxxxxxx">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="toggleVisibility('github_token')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-text">
+                                            <a href="https://github.com/settings/tokens" target="_blank">Get token</a>
+                                            (scopes: repo, user). Leave blank to use saved .env value.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="openai_api_key" class="form-label">OpenAI API Key *</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="openai_api_key"
+                                                   placeholder="sk-...">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="toggleVisibility('openai_api_key')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-text">
+                                            <a href="https://platform.openai.com/api-keys" target="_blank">Get key</a>
+                                            for deep AI analysis. Leave blank to use saved .env value.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <label for="openai_model" class="form-label">OpenAI Model</label>
+                                        <select class="form-select" id="openai_model">
+                                            <option value="gpt-4o-mini">gpt-4o-mini (fast / cheap)</option>
+                                            <option value="gpt-4o">gpt-4o (higher quality)</option>
+                                            <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                                            <option value="gpt-4.1">gpt-4.1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <label for="repo_name" class="form-label">Repository Name *</label>
+                                        <input type="text" class="form-control" id="repo_name"
+                                               placeholder="my-awesome-project" required>
+                                    </div>
+                                </div>
+
+                                <!-- Project Folder -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5><i class="fas fa-folder-open"></i> Local Project Folder</h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label for="project_path" class="form-label">Project Path *</label>
+                                        <input type="text" class="form-control" id="project_path"
+                                               placeholder="/home/user/projects/my-app" required>
+                                        <div class="form-text">
+                                            Absolute path to the existing project folder on this machine.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-end gap-2">
+                                        <button type="button" class="btn btn-outline-primary flex-fill" onclick="openFolderBrowser()">
+                                            <i class="fas fa-folder"></i> Browse
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary flex-fill" onclick="validateProject()">
+                                            <i class="fas fa-search"></i> Validate
+                                        </button>
+                                    </div>
+                                    <div class="col-12 mt-3" id="folder-browser" style="display: none;">
+                                        <div class="border rounded p-3 bg-white">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <strong id="browser-current-path"></strong>
+                                                <button type="button" class="btn btn-sm btn-outline-dark" onclick="closeFolderBrowser()">Close</button>
+                                            </div>
+                                            <div id="browser-folders" class="list-group" style="max-height: 240px; overflow-y: auto;"></div>
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-sm btn-success" onclick="selectCurrentFolder()">
+                                                    Use this folder
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" id="browser-parent-btn" onclick="browseParent()">
+                                                    Up one level
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-3" id="project-preview" style="display: none;">
+                                        <div class="status-card">
+                                            <h6><i class="fas fa-info-circle"></i> Project Preview</h6>
+                                            <div id="project-preview-content"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Project Configuration -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5><i class="fas fa-project-diagram"></i> Repository Options</h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="language" class="form-label">Primary Language</label>
+                                        <select class="form-select" id="language">
+                                            <option value="">Auto-detect</option>
+                                            <option value="typescript">TypeScript</option>
+                                            <option value="javascript">JavaScript</option>
+                                            <option value="python">Python</option>
+                                            <option value="java">Java</option>
+                                            <option value="go">Go</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="project_type" class="form-label">Project Type</label>
+                                        <select class="form-select" id="project_type">
+                                            <option value="">Auto-detect</option>
+                                            <option value="web_app">Web Application</option>
+                                            <option value="api">REST API</option>
+                                            <option value="mobile_app">Mobile App</option>
+                                            <option value="desktop_app">Desktop App</option>
+                                            <option value="library">Library/Package</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Repository Visibility</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="private" checked>
+                                            <label class="form-check-label" for="private">
+                                                Private Repository
+                                            </label>
+                                        </div>
+                                        <div class="form-text text-warning">
+                                            Private repos do not show on your public profile unless you enable
+                                            <a href="https://github.com/settings/profile" target="_blank" rel="noopener">Include private contributions</a>
+                                            in GitHub settings. Badges earned on private repos stay hidden until that is on.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="mb-4">
+                                    <label for="description" class="form-label">Project Description</label>
+                                    <textarea class="form-control" id="description" rows="2" 
+                                              placeholder="A professional application built with modern technologies..."></textarea>
+                                </div>
+
+                                <!-- Commit History Configuration -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5><i class="fas fa-history"></i> Commit History Configuration</h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="num_commits" class="form-label">Number of Commits</label>
+                                        <input type="number" class="form-control" id="num_commits" 
+                                               value="75" min="10" max="500">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="days_back" class="form-label">Days of History</label>
+                                        <input type="number" class="form-control" id="days_back" 
+                                               value="90" min="7" max="365">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="commit_style" class="form-label">Commit Style</label>
+                                        <select class="form-select" id="commit_style">
+                                            <option value="conventional">Conventional Commits</option>
+                                            <option value="descriptive">Descriptive Messages</option>
+                                            <option value="mixed">Mixed Style</option>
+                                        </select>
+                                        <div class="form-text">
+                                            Conventional: <code>feat: ...</code> /
+                                            Descriptive: full sentences /
+                                            Mixed: both
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Optional (current time only)</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="create_issues">
+                                            <label class="form-check-label" for="create_issues">
+                                                Create Issues
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="create_prs">
+                                            <label class="form-check-label" for="create_prs">
+                                                Create Pull Requests
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="count_on_contribution_graph" checked>
+                                            <label class="form-check-label" for="count_on_contribution_graph">
+                                                Count on my contribution graph
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Uses your GitHub noreply email on every commit so squares appear on your profile.
+                                            GitHub links commits by <strong>email</strong>, so all commits will show as you — names may vary, but the contributor is always your account.
+                                        </div>
+                                        <div class="form-text text-warning">
+                                            Issues/PRs always use GitHub server time — past dates are impossible.
+                                            Only commits support real historical timestamps.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Achievements (optional, not real history) -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5><i class="fas fa-medal"></i> Profile Badges <span class="badge bg-secondary">optional / not real history</span></h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="unlock_achievements">
+                                            <label class="form-check-label" for="unlock_achievements">
+                                                Also run badge unlocker after publish
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Separate from project history. Creates artificial PRs/issues for badges only.
+                                            Leave unchecked for <strong>real history only</strong>.
+                                            Badges unlock on the server immediately, but may take hours to appear on your profile.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input badge-option" type="checkbox" id="badge_pull_shark" value="pull_shark" checked>
+                                            <label class="form-check-label" for="badge_pull_shark">Pull Shark (merged PRs)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input badge-option" type="checkbox" id="badge_pair" value="pair_extraordinaire" checked>
+                                            <label class="form-check-label" for="badge_pair">Pair Extraordinaire (coauthors)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input badge-option" type="checkbox" id="badge_yolo" value="yolo" checked>
+                                            <label class="form-check-label" for="badge_yolo">YOLO (merge without review)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input badge-option" type="checkbox" id="badge_quickdraw" value="quickdraw" checked>
+                                            <label class="form-check-label" for="badge_quickdraw">Quickdraw (fast close)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input badge-option" type="checkbox" id="badge_heart" value="heart_on_your_sleeve" checked>
+                                            <label class="form-check-label" for="badge_heart">Heart On Your Sleeve (reactions)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="pull_shark_count" class="form-label">Pull Shark merges</label>
+                                        <select class="form-select" id="pull_shark_count">
+                                            <option value="2">2 (default tier)</option>
+                                            <option value="16" selected>16 (bronze)</option>
+                                            <option value="32">32</option>
+                                            <option value="128">128 (silver)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="pair_count" class="form-label">Pair coauthored merges</label>
+                                        <select class="form-select" id="pair_count">
+                                            <option value="1">1 (default tier)</option>
+                                            <option value="10" selected>10 (bronze)</option>
+                                            <option value="24">24 (silver)</option>
+                                            <option value="48">48 (gold)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Team Members Configuration -->
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5><i class="fas fa-users"></i> Team Members</h5>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addTeamMember()">
+                                            <i class="fas fa-plus"></i> Add Member
+                                        </button>
+                                    </div>
+                                    <div id="team-members">
+                                        <!-- Default team members will be added here -->
+                                    </div>
+                                </div>
+
+                                <!-- Real History Info -->
+                                <div class="realistic-features">
+                                    <h6><i class="fas fa-check-circle"></i> Real history mode (default)</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled mb-0">
+                                                <li><i class="fas fa-check text-success"></i> Commits built from your real project files</li>
+                                                <li><i class="fas fa-check text-success"></i> Past commit author/committer dates</li>
+                                                <li><i class="fas fa-check text-success"></i> Final tree matches your project</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled mb-0">
+                                                <li><i class="fas fa-times text-danger"></i> Issue created_at cannot be faked</li>
+                                                <li><i class="fas fa-times text-danger"></i> PR opened_at cannot be faked</li>
+                                                <li><i class="fas fa-info text-primary"></i> PR commit dates inside can be historical</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-rocket"></i>
+                                        Create Repository from Project
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section class="progress-section" id="progress-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-cogs"></i>
+                                Creating Your Repository...
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div id="progress-content">
+                                <div class="progress mb-3" style="height: 30px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         id="progress-bar" role="progressbar" style="width: 0%">
+                                        0%
+                                    </div>
+                                </div>
+                                <p id="status-message" class="text-center mb-0">
+                                    Initializing repository creation...
+                                </p>
+                            </div>
+                            <div id="result-content" style="display: none;">
+                                <!-- Result will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize default team members
+        const defaultTeamMembers = [
+            { name: "Alex Rivera", email: "alex.rivera@codepulse.dev", role: "Senior Full Stack Developer", activity_level: "high" },
+            { name: "Sarah Chen", email: "sarah.chen@codepulse.dev", role: "DevOps Engineer", activity_level: "medium" },
+            { name: "Marcus Vance", email: "marcus.vance@codepulse.dev", role: "Security Engineer", activity_level: "medium" }
+        ];
+
+        let browserState = { current: null, parent: null };
+
+        // Load default team members + saved settings
+        document.addEventListener('DOMContentLoaded', function() {
+            defaultTeamMembers.forEach(member => {
+                addTeamMemberWithData(member);
+            });
+            loadSettings();
+        });
+
+        function toggleVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        async function loadSettings() {
+            const statusEl = document.getElementById('credentials-status');
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+
+                document.getElementById('openai_model').value = data.openai_model || 'gpt-4o-mini';
+                document.getElementById('num_commits').value = data.default_commits || 50;
+                document.getElementById('days_back').value = data.default_days_back || 90;
+                document.getElementById('private').checked = !!data.default_private;
+
+                // Prefill from browser localStorage if user saved there before
+                const saved = JSON.parse(localStorage.getItem('repoBotCredentials') || '{}');
+                if (saved.github_token) document.getElementById('github_token').value = saved.github_token;
+                if (saved.openai_api_key) document.getElementById('openai_api_key').value = saved.openai_api_key;
+                if (saved.openai_model) document.getElementById('openai_model').value = saved.openai_model;
+                if (saved.project_path) document.getElementById('project_path').value = saved.project_path;
+
+                const githubStatus = data.github_token_set
+                    ? `GitHub token saved (${data.github_token_masked})`
+                    : 'GitHub token not saved yet';
+                const openaiStatus = data.openai_api_key_set
+                    ? `OpenAI key saved (${data.openai_api_key_masked})`
+                    : 'OpenAI key not saved yet';
+                statusEl.innerHTML = `<span class="text-success"><i class="fas fa-check-circle"></i> ${githubStatus}</span> · <span class="${data.openai_api_key_set ? 'text-success' : 'text-warning'}"><i class="fas fa-${data.openai_api_key_set ? 'check' : 'exclamation'}-circle"></i> ${openaiStatus}</span>`;
+
+                if (!document.getElementById('project_path').value && data.cwd) {
+                    document.getElementById('project_path').placeholder = data.cwd;
+                }
+            } catch (error) {
+                statusEl.textContent = 'Could not load saved settings.';
+            }
+        }
+
+        async function testGitHubToken() {
+            const github_token = document.getElementById('github_token').value.trim();
+            const statusEl = document.getElementById('credentials-status');
+            statusEl.innerHTML = '<span class="text-muted">Testing GitHub token...</span>';
+
+            try {
+                const response = await fetch('/api/validate-github-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ github_token })
+                });
+                const data = await response.json();
+                if (!response.ok || !data.valid) {
+                    statusEl.innerHTML = `<span class="text-danger"><i class="fas fa-times-circle"></i> ${data.error || 'Invalid token'}</span>`;
+                    return;
+                }
+                statusEl.innerHTML = `<span class="text-success"><i class="fas fa-check-circle"></i> ${data.message}</span>`;
+            } catch (error) {
+                statusEl.innerHTML = `<span class="text-danger">Token test failed: ${error.message}</span>`;
+            }
+        }
+
+        async function saveCredentials() {
+            const github_token = document.getElementById('github_token').value.trim();
+            const openai_api_key = document.getElementById('openai_api_key').value.trim();
+            const openai_model = document.getElementById('openai_model').value;
+            const project_path = document.getElementById('project_path').value.trim();
+
+            // Also remember in browser for convenience
+            localStorage.setItem('repoBotCredentials', JSON.stringify({
+                github_token,
+                openai_api_key,
+                openai_model,
+                project_path
+            }));
+
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ github_token, openai_api_key, openai_model })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Failed to save');
+                alert(data.message);
+                loadSettings();
+            } catch (error) {
+                alert('Failed to save credentials: ' + error.message);
+            }
+        }
+
+        async function openFolderBrowser() {
+            const start = document.getElementById('project_path').value.trim() || '/home/user';
+            document.getElementById('folder-browser').style.display = 'block';
+            await browseTo(start);
+        }
+
+        function closeFolderBrowser() {
+            document.getElementById('folder-browser').style.display = 'none';
+        }
+
+        async function browseTo(path) {
+            try {
+                const response = await fetch('/api/browse-folders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Browse failed');
+
+                browserState = { current: data.current, parent: data.parent };
+                document.getElementById('browser-current-path').textContent = data.current;
+                document.getElementById('browser-parent-btn').disabled = !data.parent;
+
+                const list = document.getElementById('browser-folders');
+                list.innerHTML = '';
+                if (!data.folders.length) {
+                    list.innerHTML = '<div class="list-group-item text-muted">No subfolders</div>';
+                    return;
+                }
+                data.folders.forEach(folder => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'list-group-item list-group-item-action';
+                    item.innerHTML = `<i class="fas fa-folder text-warning"></i> ${folder.name}`;
+                    item.onclick = () => browseTo(folder.path);
+                    list.appendChild(item);
+                });
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function browseParent() {
+            if (browserState.parent) browseTo(browserState.parent);
+        }
+
+        function selectCurrentFolder() {
+            if (browserState.current) {
+                document.getElementById('project_path').value = browserState.current;
+                closeFolderBrowser();
+            }
+        }
+
+        function addTeamMember() {
+            addTeamMemberWithData({
+                name: "",
+                email: "",
+                role: "Developer",
+                activity_level: "medium"
+            });
+        }
+
+        function addTeamMemberWithData(memberData) {
+            const container = document.getElementById('team-members');
+            const memberId = 'member-' + Date.now();
+            
+            const memberHtml = `
+                <div class="team-member" id="${memberId}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Developer Name" 
+                                   name="member_name" value="${memberData.name}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="email" class="form-control" placeholder="developer@company.com" 
+                                   name="member_email" value="${memberData.email}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Role" 
+                                   name="member_role" value="${memberData.role}">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="member_activity">
+                                <option value="low" ${memberData.activity_level === 'low' ? 'selected' : ''}>Low Activity</option>
+                                <option value="medium" ${memberData.activity_level === 'medium' ? 'selected' : ''}>Medium Activity</option>
+                                <option value="high" ${memberData.activity_level === 'high' ? 'selected' : ''}>High Activity</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeTeamMember('${memberId}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', memberHtml);
+        }
+
+        function removeTeamMember(memberId) {
+            const member = document.getElementById(memberId);
+            if (member && document.querySelectorAll('.team-member').length > 1) {
+                member.remove();
+            } else {
+                alert('You must have at least one team member.');
+            }
+        }
+
+        function collectTeamMembers() {
+            const members = [];
+            document.querySelectorAll('.team-member').forEach(memberEl => {
+                const name = memberEl.querySelector('input[name="member_name"]').value;
+                const email = memberEl.querySelector('input[name="member_email"]').value;
+                const role = memberEl.querySelector('input[name="member_role"]').value;
+                const activity_level = memberEl.querySelector('select[name="member_activity"]').value;
+                
+                if (name && email) {
+                    members.push({ name, email, role, activity_level });
+                }
+            });
+            return members;
+        }
+
+        async function validateProject() {
+            const projectPath = document.getElementById('project_path').value.trim();
+            if (!projectPath) {
+                alert('Please enter a project path first.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/validate-project', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ project_path: projectPath })
+                });
+                const data = await response.json();
+
+                const preview = document.getElementById('project-preview');
+                const content = document.getElementById('project-preview-content');
+
+                if (!response.ok || !data.valid) {
+                    preview.style.display = 'block';
+                    content.innerHTML = `<p class="text-danger mb-0">${data.error || 'Invalid project path'}</p>`;
+                    return;
+                }
+
+                preview.style.display = 'block';
+                content.innerHTML = `
+                    <p><strong>${data.name}</strong> — ${data.file_count} files</p>
+                    <p class="mb-1">Language: <code>${data.language}</code></p>
+                    <p class="mb-1">Frameworks: ${(data.frameworks || []).join(', ') || 'none detected'}</p>
+                    <p class="mb-0">Sample files: ${(data.sample_files || []).slice(0, 5).map(f => `<code>${f}</code>`).join(', ')}</p>
+                `;
+            } catch (error) {
+                alert('Failed to validate project: ' + error.message);
+            }
+        }
+
+        // Form submission
+        document.getElementById('repository-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const config = {
+                github_token: document.getElementById('github_token').value,
+                openai_api_key: document.getElementById('openai_api_key').value,
+                openai_model: document.getElementById('openai_model').value,
+                project_path: document.getElementById('project_path').value.trim(),
+                repo_name: document.getElementById('repo_name').value,
+                language: document.getElementById('language').value,
+                project_type: document.getElementById('project_type').value,
+                private: document.getElementById('private').checked,
+                description: document.getElementById('description').value,
+                num_commits: parseInt(document.getElementById('num_commits').value),
+                days_back: parseInt(document.getElementById('days_back').value),
+                commit_style: document.getElementById('commit_style').value,
+                create_issues: document.getElementById('create_issues').checked,
+                create_prs: document.getElementById('create_prs').checked,
+                count_on_contribution_graph: document.getElementById('count_on_contribution_graph').checked,
+                unlock_achievements: document.getElementById('unlock_achievements').checked,
+                achievement_badges: Array.from(document.querySelectorAll('.badge-option:checked')).map(el => el.value),
+                pull_shark_count: parseInt(document.getElementById('pull_shark_count').value),
+                pair_count: parseInt(document.getElementById('pair_count').value),
+                team_members: collectTeamMembers()
+            };
+
+            // Remember credentials in browser
+            localStorage.setItem('repoBotCredentials', JSON.stringify({
+                github_token: config.github_token,
+                openai_api_key: config.openai_api_key,
+                openai_model: config.openai_model,
+                project_path: config.project_path
+            }));
+
+            if (!config.project_path) {
+                alert('Please enter the local project folder path.');
+                return;
+            }
+
+            // Validate team members
+            if (config.team_members.length === 0) {
+                alert('Please add at least one team member.');
+                return;
+            }
+
+            try {
+                // Show progress section
+                document.getElementById('form-section').style.display = 'none';
+                document.getElementById('progress-section').style.display = 'block';
+
+                // Start repository creation
+                const response = await fetch('/api/create-repository', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                // Poll for status updates
+                pollStatus(result.operation_id);
+
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        function pollStatus(operationId) {
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/status/${operationId}`);
+                    const status = await response.json();
+
+                    updateProgress(status);
+
+                    if (status.status === 'completed') {
+                        clearInterval(interval);
+                        showSuccess(status);
+                    } else if (status.status === 'error') {
+                        clearInterval(interval);
+                        showError(status.message);
+                    }
+                } catch (error) {
+                    clearInterval(interval);
+                    showError('Failed to get status update');
+                }
+            }, 2000);
+        }
+
+        function updateProgress(status) {
+            const progressBar = document.getElementById('progress-bar');
+            const statusMessage = document.getElementById('status-message');
+
+            progressBar.style.width = status.progress + '%';
+            progressBar.textContent = status.progress + '%';
+
+            const statusMessages = {
+                'authenticated': 'Verifying GitHub credentials...',
+                'initializing': 'Initializing...',
+                'scanning_project': 'Scanning local project files...',
+                'analyzing_project': 'Running deep AI analysis...',
+                'planning_commits': 'Planning contextual commit history...',
+                'building_history': 'Building git history from real files...',
+                'applying_commits': 'Applying commits...',
+                'syncing_all_files': 'Syncing complete project files...',
+                'creating_repository': 'Creating GitHub repository...',
+                'creating_github_issues': 'Creating contextual GitHub issues...',
+                'creating_pull_requests': 'Creating pull requests...',
+                'unlocking_achievements': 'Unlocking GitHub profile achievements...',
+                'unlocking_pull_shark': 'Unlocking Pull Shark...',
+                'unlocking_pair_extraordinaire': 'Unlocking Pair Extraordinaire...',
+                'unlocking_yolo': 'Unlocking YOLO...',
+                'unlocking_quickdraw': 'Unlocking Quickdraw...',
+                'unlocking_heart_on_your_sleeve': 'Unlocking Heart On Your Sleeve...',
+                'pushing_to_github': 'Pushing to GitHub...',
+                'completed': 'Done!'
+            };
+
+            statusMessage.textContent = statusMessages[status.status] || 'Processing...';
+        }
+
+        function showSuccess(status) {
+            document.getElementById('progress-content').style.display = 'none';
+            
+            const resultHtml = `
+                <div class="success-card">
+                    <h5><i class="fas fa-check-circle text-success"></i> Project Published Successfully!</h5>
+                    <p class="mb-2">${status.message}</p>
+                    ${status.analysis_summary ? `<p class="text-muted">${status.analysis_summary}</p>` : ''}
+                    <ul class="mb-3">
+                        <li>Commits: ${status.commits_created || 0}</li>
+                        <li>Issues: ${status.issues_created || 0}</li>
+                        <li>Pull requests: ${status.pull_requests_created || 0}
+                            ${status.pull_requests_merged ? ` (${status.pull_requests_merged} merged)` : ''}</li>
+                        <li>Achievements: ${
+                            status.achievements && status.achievements.earned && status.achievements.earned.length
+                                ? status.achievements.earned.join(', ')
+                                : (status.achievements ? 'attempted' : 'skipped')
+                        }</li>
+                        <li>AI powered: ${status.ai_powered ? 'Yes' : 'No (set OPENAI_API_KEY)'}</li>
+                    </ul>
+                    <div class="d-grid gap-2">
+                        <a href="${status.repository_url}" class="btn btn-success btn-lg" target="_blank">
+                            <i class="fab fa-github"></i>
+                            View Repository on GitHub
+                        </a>
+                        <button class="btn btn-outline-primary" onclick="location.reload()">
+                            <i class="fas fa-plus"></i>
+                            Publish Another Project
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = resultHtml;
+            document.getElementById('result-content').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('progress-content').style.display = 'none';
+            
+            const resultHtml = `
+                <div class="error-card">
+                    <h5><i class="fas fa-exclamation-triangle text-danger"></i> Error Creating Repository</h5>
+                    <p class="mb-3">${message}</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            <i class="fas fa-redo"></i>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = resultHtml;
+            document.getElementById('result-content').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

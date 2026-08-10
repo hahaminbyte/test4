@@ -1,0 +1,16 @@
+{
+  "name": "haztrak-workspace",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm --prefix client install",
+    "clean": "rm -rf client/node_modules client/node_modules/.vite client/build",
+    "prestart": "node --input-type=commonjs -e \"require('fs').rmSync('client/node_modules/.vite',{recursive:true,force:true})\"",
+    "start": "bash scripts/start-dev.sh",
+    "predev": "node --input-type=commonjs -e \"require('fs').rmSync('client/node_modules/.vite',{recursive:true,force:true})\"",
+    "dev": "bash scripts/start-dev.sh",
+    "start:client": "npm --prefix client start",
+    "start:server": "bash scripts/start-server.sh",
+    "build": "npm --prefix client run build",
+    "test": "npm --prefix client test"
+  }
+}

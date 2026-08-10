@@ -1,0 +1,345 @@
+/* GitHub Repository Enhancement Bot - Custom Styles */
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Hero Section */
+.hero-section {
+    background: var(--primary-gradient);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>');
+    background-size: cover;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+    transition: all 0.2s ease-in-out;
+    border-radius: 0.75rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background: var(--primary-gradient) !important;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    border-bottom: none;
+}
+
+/* Form Elements */
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-1px);
+}
+
+/* Team Members */
+.team-member {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.team-member:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0.125rem 0.25rem rgba(102, 126, 234, 0.1);
+}
+
+/* Feature Icons */
+.feature-icon {
+    font-size: 3rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+/* Progress Bar */
+.progress {
+    border-radius: 1rem;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    background: var(--primary-gradient);
+    border-radius: 1rem;
+}
+
+/* Status Cards */
+.status-card {
+    background: linear-gradient(45deg, #fff3cd, #fef7e0);
+    border: 1px solid var(--warning-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.success-card {
+    background: linear-gradient(45deg, #d1edff, #e7f5ff);
+    border: 1px solid var(--success-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.error-card {
+    background: linear-gradient(45deg, #f8d7da, #fce8ea);
+    border: 1px solid var(--danger-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+/* Realistic Features Box */
+.realistic-features {
+    background: linear-gradient(45deg, #e3f2fd, #f3e5f5);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.realistic-features h6 {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in-up {
+    animation: slideInUp 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+    }
+    
+    .team-member .row > div {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gradient);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Tooltips */
+.tooltip-inner {
+    background-color: var(--secondary-color);
+    border-radius: 0.5rem;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--secondary-color);
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* GitHub Links */
+a[href*="github.com"] {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a[href*="github.com"]:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Success/Error Messages */
+.alert {
+    border-radius: 0.75rem;
+    border: none;
+}
+
+.alert-success {
+    background: linear-gradient(45deg, #d4edda, #c3e6cb);
+    color: #155724;
+}
+
+.alert-danger {
+    background: linear-gradient(45deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+}
+
+/* Badge Styles */
+.badge {
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.badge-primary {
+    background: var(--primary-gradient);
+}
+
+/* Input Groups */
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+/* Footer */
+.footer {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #e9ecef;
+    }
+    
+    .card {
+        background-color: #2d2d2d;
+        color: #e9ecef;
+    }
+    
+    .form-control, .form-select {
+        background-color: #3d3d3d;
+        border-color: #495057;
+        color: #e9ecef;
+    }
+    
+    .team-member {
+        background-color: #3d3d3d;
+        border-color: #495057;
+    }
+}

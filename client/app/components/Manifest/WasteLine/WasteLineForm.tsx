@@ -233,5 +233,3 @@ export function WasteLineForm({ handleClose, wasteForm, waste, lineNumber }: Was
     </FormProvider>
   );
 }
-
-// history-step 25: Refactored code for better readability

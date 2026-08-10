@@ -1,0 +1,8 @@
+.gitignore
+.dockerignore
+README.md
+node_modules/
+**/.vscode
+**/.idea
+**/*.bak
+/coverage

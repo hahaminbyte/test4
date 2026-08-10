@@ -1,0 +1,80 @@
+name: "Trak Service Tests"
+# This workflow is responsible for running the Haztrak server tests.
+# It spins up a postgres container and runs the tests against it.
+
+env:
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: password1
+  POSTGRES_DB: haztrak_db
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "server/**"
+      - ".github/workflows/test_server.yaml"
+  push:
+    paths:
+      - "server/**"
+      - ".github/workflows/test_server.yaml"
+  workflow_call:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./server
+
+jobs:
+  run_server_tests:
+    name: "Run Server Tests"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.12
+          pyproject-file: "./pyproject.toml"
+
+      - name: "Install Python dependencies"
+        run: uv sync --all-extras --dev
+
+      - name: "Run Tests"
+        env:
+          HT_SECRET_KEY: "django-insecure-%btjqoun@6ps$e@8bw$48s+!x1e4aiz&5p2nrf6cmiw4)jsx5d"
+          HT_CORS_DOMAIN: http://localhost:3000
+          HT_TIMEZONE: America/New_York
+          HT_HOST: localhost
+          HT_RCRAINFO_ENV: preprod
+          HT_DEBUG: true
+          HT_DB_ENGINE: django.db.backends.postgresql
+          HT_DB_HOST: localhost
+          HT_DB_USER: ${{ env.POSTGRES_USER }}
+          HT_DB_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          HT_DB_NAME: ${{ env.POSTGRES_DB }}
+          HT_DB_PORT: ${{ job.services.postgres.ports[5432] }}
+        run: uv run pytest -n auto

@@ -61,5 +61,3 @@ const Spinner = React.forwardRef<SpinnerElement, SpinnerContentProps>(
 Spinner.displayName = 'Spinner';
 
 export { Spinner };
-
-// history-step 21: Refactored loading indicators for better UX

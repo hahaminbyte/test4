@@ -1,0 +1,96 @@
+{
+  "developers": [
+    {
+      "name": "Alex Rivera",
+      "email": "alex.rivera@codepulse.dev",
+      "role": "Senior Full Stack Developer",
+      "commit_style": "feature-focused",
+      "activity_level": "high"
+    },
+    {
+      "name": "Sarah Chen",
+      "email": "sarah.chen@codepulse.dev", 
+      "role": "DevOps Engineer & Architecture Lead",
+      "commit_style": "infrastructure-focused",
+      "activity_level": "medium"
+    },
+    {
+      "name": "Marcus Vance",
+      "email": "marcus.vance@codepulse.dev",
+      "role": "Security Engineer & Code Quality Specialist", 
+      "commit_style": "quality-focused",
+      "activity_level": "medium"
+    }
+  ],
+  "commit_templates": {
+    "feature": [
+      "feat: implement {feature} with advanced {tech} integration",
+      "feat: add {feature} support for enhanced user experience",
+      "feat: introduce {feature} with comprehensive error handling",
+      "feat: develop {feature} module with scalable architecture"
+    ],
+    "fix": [
+      "fix: resolve {issue} in {component} under high load conditions",
+      "fix: handle edge cases in {component} for better reliability", 
+      "fix: address memory leak in {component} during {scenario}",
+      "fix: patch security vulnerability in {component} authentication"
+    ],
+    "refactor": [
+      "refactor: optimize {component} for improved performance metrics",
+      "refactor: restructure {component} following SOLID principles",
+      "refactor: modernize {component} codebase with latest patterns",
+      "refactor: extract reusable utilities from {component}"
+    ],
+    "docs": [
+      "docs: update {section} documentation with comprehensive examples",
+      "docs: add detailed API specification for {component}",
+      "docs: improve {section} guides with best practices",
+      "docs: document {feature} implementation and usage patterns"
+    ],
+    "test": [
+      "test: add comprehensive unit tests for {component}",
+      "test: implement integration tests for {feature} workflow",
+      "test: enhance {component} test coverage with edge cases",
+      "test: add performance benchmarks for {component}"
+    ],
+    "chore": [
+      "chore: update dependencies to latest stable versions",
+      "chore: configure {tool} for improved development workflow",
+      "chore: clean up legacy code and unused dependencies",
+      "chore: optimize build configuration for faster deployment"
+    ]
+  },
+  "components": [
+    "authentication middleware", "API gateway", "database layer", "caching system",
+    "message queue", "user interface", "search engine", "notification system",
+    "analytics module", "security layer", "payment processor", "file storage",
+    "logging framework", "configuration manager", "task scheduler", "monitoring dashboard"
+  ],
+  "technologies": [
+    "Redis", "PostgreSQL", "Docker", "Kubernetes", "GraphQL", "REST API",
+    "OAuth2", "JWT", "WebSocket", "microservices", "serverless", "CI/CD"
+  ],
+  "features": [
+    "real-time notifications", "advanced search", "user authentication", 
+    "data visualization", "file upload", "email integration", "social login",
+    "two-factor authentication", "role-based access", "audit logging"
+  ],
+  "repository_settings": {
+    "default_branch": "main",
+    "auto_merge": false,
+    "delete_branch_on_merge": true,
+    "has_issues": true,
+    "has_projects": true,
+    "has_wiki": true,
+    "vulnerability_alerts": true
+  },
+  "github_labels": [
+    {"name": "bug", "color": "d73a4a", "description": "Something isn't working"},
+    {"name": "enhancement", "color": "a2eeef", "description": "New feature or request"},
+    {"name": "documentation", "color": "0075ca", "description": "Improvements or additions to documentation"},
+    {"name": "security", "color": "d4edda", "description": "Security-related issues"},
+    {"name": "performance", "color": "fbca04", "description": "Performance optimization"},
+    {"name": "refactor", "color": "e99695", "description": "Code refactoring"},
+    {"name": "testing", "color": "c5def5", "description": "Testing improvements"}
+  ]
+}

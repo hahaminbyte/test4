@@ -1,0 +1,11 @@
+PyGithub==1.59.1
+requests==2.31.0
+python-dotenv==1.0.0
+click==8.1.7
+colorama==0.4.6
+tqdm==4.66.1
+faker==19.12.0
+gitpython==3.1.40
+pyyaml==6.0.1
+rich==13.7.0
+openai>=1.30.0

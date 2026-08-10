@@ -1,0 +1,35 @@
+name: Lint Python files
+on:
+  pull_request:
+    paths:
+      - "server/**"
+      - ".github/workflows/*"
+  push:
+    paths:
+      - "server/**"
+      - ".github/workflows/*"
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.12
+
+      - name: "Install Python dependencies"
+        run: uv sync --all-extras --dev
+
+      - name: "Lint Python"
+        run: uv run ruff check . -e
+
+      - name: "Format Python"
+        run: uv run ruff format . --check

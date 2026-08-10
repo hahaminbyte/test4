@@ -1,0 +1,29 @@
+name: Release Drafter
+# This workflow is responsible for analyzing PR labels and updating a draft release with the changes (our changelog).
+# we currently have a separate PR labeler (We used that before this was added to the USEPA approved list)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  update_release_draft:
+    name: "Update Release Draft"
+    if: github.repository == 'usepa/haztrak'
+    permissions:
+      # write permission is required to update the release draft
+      contents: write
+      # PR write permission is required for autolabeler
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Release Draft
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

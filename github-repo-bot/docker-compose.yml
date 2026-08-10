@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  github-repo-bot:
+    build: .
+    container_name: github-enhancement-bot
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - DEFAULT_PRIVATE=true
+      - DEFAULT_COMMITS=50
+      - DEFAULT_DAYS_BACK=90
+    volumes:
+      - .:/app
+      - /tmp:/tmp
+    working_dir: /app
+    networks:
+      - bot-network
+    restart: unless-stopped
+    
+  # Optional: Redis for caching (future enhancement)
+  redis:
+    image: redis:7-alpine
+    container_name: bot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - bot-network
+    restart: unless-stopped
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  redis_data:

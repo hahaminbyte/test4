@@ -1,0 +1,161 @@
+services:
+  trak:
+    container_name: trak
+    restart: unless-stopped
+    image: haztrak-server
+    build:
+      context: ./server
+    volumes:
+      - ./server/core:/app/core
+      - ./server/haztrak:/app/haztrak
+      - ./server/manifest:/app/manifest
+      - ./server/org:/app/org
+      - ./server/profile:/app/profile
+      - ./server/rcrasite:/app/rcrasite
+      - ./server/wasteline:/app/wasteline
+    environment:
+      DJANGO_SETTINGS_MODULE: "haztrak.settings.dev"
+      CELERY_BROKER_URL: "redis://redis:6379"
+      HT_HOST: "http://localhost"
+      HT_SECRET_KEY: ${HT_SECRET_KEY}
+      HT_DEBUG: true
+      HT_LOG_LEVEL: ${HT_LOG_LEVEL}
+      HT_TIMEZONE: ${HT_TIMEZONE}
+      HT_RCRAINFO_ENV: ${HT_RCRAINFO_ENV}
+      HT_CORS_DOMAIN: "http://localhost"
+      HT_CACHE_URL: ${HT_CACHE_URL}
+      HT_DB_ENGINE: ${HT_DB_ENGINE}
+      HT_DB_NAME: ${HT_DB_NAME}
+      HT_DB_USER: ${HT_DB_USER}
+      HT_DB_PASSWORD: ${HT_DB_PASSWORD}
+      HT_DB_HOST: db
+      HT_DB_PORT: ${HT_DB_PORT}
+    command: |
+      sh -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py loaddata core_dev.yaml rcrasite_dev.yaml org_dev.yaml profile_dev.yaml &&
+      uvicorn --host 0.0.0.0 --port 8000 --reload haztrak.asgi:app"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  redis:
+    container_name: redis
+    image: "redis:8.2-alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - imdb:/data
+
+  celery-worker:
+    restart: unless-stopped
+    container_name: celery-worker
+    image: haztrak-server
+    build:
+      context: ./server
+    volumes:
+      - ./server/core:/app/core
+      - ./server/haztrak:/app/haztrak
+      - ./server/manifest:/app/manifest
+      - ./server/org:/app/org
+      - ./server/profile:/app/profile
+      - ./server/rcrasite:/app/rcrasite
+      - ./server/wasteline:/app/wasteline
+    environment:
+      DJANGO_SETTINGS_MODULE: "haztrak.settings.dev"
+      CELERY_BROKER_URL: "redis://redis:6379"
+      CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL}
+      HT_RCRAINFO_ENV: ${HT_RCRAINFO_ENV}
+      HT_DB_ENGINE: ${HT_DB_ENGINE}
+      HT_DB_NAME: ${HT_DB_NAME}
+      HT_DB_USER: ${HT_DB_USER}
+      HT_DB_PASSWORD: ${HT_DB_PASSWORD}
+      HT_DB_HOST: db
+      HT_DB_PORT: ${HT_DB_PORT}
+    command: python manage.py celery_worker
+
+  celery-beat:
+    restart: unless-stopped
+    container_name: celery-beat
+    image: haztrak-server
+    build:
+      context: ./server
+    volumes:
+      - ./server/core:/app/core
+      - ./server/haztrak:/app/haztrak
+      - ./server/manifest:/app/manifest
+      - ./server/org:/app/org
+      - ./server/profile:/app/profile
+      - ./server/rcrasite:/app/rcrasite
+      - ./server/wasteline:/app/wasteline
+    environment:
+      DJANGO_SETTINGS_MODULE: "haztrak.settings.dev"
+      CELERY_BROKER_URL: "redis://redis:6379"
+      CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL}
+      HT_RCRAINFO_ENV: ${HT_RCRAINFO_ENV}
+      HT_DB_ENGINE: ${HT_DB_ENGINE}
+      HT_DB_NAME: ${HT_DB_NAME}
+      HT_DB_USER: ${HT_DB_USER}
+      HT_DB_PASSWORD: ${HT_DB_PASSWORD}
+      HT_DB_HOST: db
+      HT_DB_PORT: ${HT_DB_PORT}
+    command: python manage.py celery_beat
+
+  db:
+    restart: unless-stopped
+    container_name: db
+    image: "postgres:17.5"
+    environment:
+      POSTGRES_DB: ${HT_DB_NAME}
+      POSTGRES_USER: ${HT_DB_USER}
+      POSTGRES_PASSWORD: ${HT_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $HT_DB_USER -d $HT_DB_NAME" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - rdb:/var/lib/postgresql/data
+
+  client:
+    container_name: ht-client
+    build:
+      context: ./client
+      target: dev
+    volumes:
+      - ./client/public:/app/public
+      - ./client/app:/app/app
+      - ./client/postcss.config.js:/app/postcss.config.js
+      - ./client/vite.config.ts:/app/vite.config.ts
+      - ./client/nginx.conf:/app/nginx.conf
+      - ./client/index.html:/app/index.html
+    environment:
+      VITE_HT_API_URL: ${VITE_HT_API_URL}
+      VITE_HT_ENV: ${VITE_HT_ENV}
+      VITE_GITHUB_URL: ${VITE_GITHUB_URL}
+    command: sh -c "cd /app; npm install; npm start"
+
+  nginx:
+    container_name: nginx
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - trak
+      - client
+
+  mail:
+    container_name: mail
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+volumes:
+  rdb:
+  imdb:

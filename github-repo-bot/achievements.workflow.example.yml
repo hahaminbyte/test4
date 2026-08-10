@@ -1,0 +1,115 @@
+# Optional GitHub Actions workflow for multi-badge achievement unlocks.
+# Usage:
+# 1. Copy to your target repo as .github/workflows/achievements.yml
+# 2. Add repository secret ACHIEVEMENT_TOKEN (PAT with repo scope)
+# 3. Run the workflow manually from the Actions tab
+#
+# This workflow only demonstrates the concept. Prefer the local bot:
+#   python3 bot.py --achievements-only --repo-name YOUR_REPO --unlock-achievements
+
+name: Multi Badge Achievement Unlocker
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_shark_count:
+        description: "Merged PRs for Pull Shark"
+        required: true
+        default: "16"
+      pair_count:
+        description: "Coauthored merges for Pair Extraordinaire"
+        required: true
+        default: "10"
+
+jobs:
+  unlock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependency
+        run: pip install PyGithub rich
+
+      - name: Run achievement unlocker
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACHIEVEMENT_TOKEN || secrets.GITHUB_TOKEN }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PULL_SHARK_COUNT: ${{ github.event.inputs.pull_shark_count }}
+          PAIR_COUNT: ${{ github.event.inputs.pair_count }}
+        run: |
+          python - <<'PY'
+          import os
+          from github import Github
+          import time
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo_name = os.environ["REPO_NAME"]
+          pull_n = int(os.environ.get("PULL_SHARK_COUNT", "16"))
+          pair_n = int(os.environ.get("PAIR_COUNT", "10"))
+
+          g = Github(token)
+          user = g.get_user()
+          repo = user.get_repo(repo_name)
+          base = repo.default_branch
+
+          def ensure_file(path, body):
+              try:
+                  repo.get_contents(path)
+              except Exception:
+                  repo.create_file(path, f"chore: add {path}", body, branch=base)
+
+          ensure_file("README.md", f"# {repo_name}\n")
+          ensure_file("ACHIEVEMENTS.md", "# Achievements\n")
+
+          # Quickdraw
+          issue = repo.create_issue(title="Quickdraw", body="auto-close")
+          issue.edit(state="closed")
+
+          # YOLO + Pull Shark
+          for i in range(1, pull_n + 1):
+              branch = f"achievement/actions-pr-{i}-{int(time.time())}"
+              sha = repo.get_branch(base).commit.sha
+              repo.create_git_ref(ref=f"refs/heads/{branch}", sha=sha)
+              content = repo.get_contents("ACHIEVEMENTS.md", ref=branch)
+              repo.update_file(
+                  "ACHIEVEMENTS.md",
+                  f"chore: badge batch {i}",
+                  content.decoded_content.decode() + f"\n- update {i}\n",
+                  content.sha,
+                  branch=branch,
+              )
+              pr = repo.create_pull(title=f"badge PR {i}", body="auto", head=branch, base=base)
+              pr.merge(merge_method="squash")
+              time.sleep(2)
+
+          # Pair Extraordinaire
+          for i in range(1, pair_n + 1):
+              branch = f"achievement/actions-pair-{i}-{int(time.time())}"
+              sha = repo.get_branch(base).commit.sha
+              repo.create_git_ref(ref=f"refs/heads/{branch}", sha=sha)
+              msg = (
+                  f"chore: pair session {i}\n\n"
+                  "Co-authored-by: Alex Rivera <alex.rivera@users.noreply.github.com>\n"
+                  "Co-authored-by: Sarah Chen <sarah.chen@users.noreply.github.com>\n"
+              )
+              try:
+                  content = repo.get_contents("PAIRING.md", ref=branch)
+                  repo.update_file("PAIRING.md", msg, content.decoded_content.decode() + f"\n- pair {i}\n", content.sha, branch=branch)
+              except Exception:
+                  repo.create_file("PAIRING.md", msg, f"# Pairing\n\n- pair {i}\n", branch=branch)
+              pr = repo.create_pull(title=f"pair {i}", body=msg, head=branch, base=base)
+              pr.merge(merge_method="squash", commit_message=msg, commit_title=f"chore: pair session {i}")
+              time.sleep(2)
+
+          print("Achievement workflow completed")
+          PY

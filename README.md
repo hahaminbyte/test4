@@ -77,11 +77,3 @@ otherwise, does not constitute or imply their endorsement, recommendation
 or favoring by EPA. The EPA seal and logo shall not be used in any manner
 to imply endorsement of any commercial product or activity by EPA or
 the United States Government.
-
-<!-- history-step 19: Updated README with manifest management instructions -->
-
-<!-- history-step 27: Updated README with testing instructions -->
-
-<!-- history-step 28: Finalized project documentation and setup -->
-
-<!-- history-step 35: Completed project documentation for deployment -->
