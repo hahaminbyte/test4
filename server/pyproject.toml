@@ -24,7 +24,7 @@ dependencies = [
     "django-extensions==4.1",
     "django-celery-beat==2.8.0",
     "djangorestframework==3.16.0",
-    "gunicorn==23.0.0",
+    "gunicorn==26.0.0",
     "emanifest==4.0.3",
     "psycopg[binary]==3.2.9",
     "whitenoise==6.9.0",
