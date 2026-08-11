@@ -74,3 +74,7 @@ export function GeneratorStatusAreaChart({ data = [] }: { data?: DayPoint[] }) {
     </ResponsiveContainer>
   );
 }
+
+
+// PR: Update Chart Components for New Data Structure
+// Contextual improvement from pull request history
