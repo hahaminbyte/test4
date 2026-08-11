@@ -80,3 +80,7 @@ export function ManifestCountBarChart({ data = [] }: { data?: MonthCount[] }) {
     </ResponsiveContainer>
   );
 }
+
+
+// PR: Update Chart Components for New Data Structure
+// Contextual improvement from pull request history
