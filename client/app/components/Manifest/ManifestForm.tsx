@@ -278,3 +278,7 @@ export function ManifestForm({
     </Container>
   );
 }
+
+
+// PR: Refactor Manifest Form
+// Contextual improvement from pull request history
